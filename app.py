@@ -13,7 +13,8 @@ if not api_key:
 else:
     try:
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        # إضاقة المسار الكامل للنموذج لتفادي خطأ 404
+        model = genai.GenerativeModel('models/gemini-1.5-flash')
         
         st.success("تم الاتصال بنجاح! جاهز لتوليد الامتحان.")
         
@@ -23,7 +24,6 @@ else:
         if st.button("توليد الامتحان 🚀"):
             with st.spinner("جاري قراءة الشيت وإنشاء الأسئلة..."):
                 if uploaded_file is not None:
-                    # قراءة الملف مباشرة عبر نموذج Gemini الذكي
                     file_bytes = uploaded_file.read()
                     mime_type = uploaded_file.type
                     
