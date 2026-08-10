@@ -1,11 +1,10 @@
-                    import streamlit as st
+import streamlit as st
 import google.generativeai as genai
 
 st.set_page_config(page_title="صانع الامتحانات التفاعلي", page_icon="📝")
 
 st.title("📝 صانع الامتحانات التفاعلي")
 
-# الشريط الجانبي لإدخال API Key
 st.sidebar.header("الإعدادات")
 api_key = st.sidebar.text_input("أدخلي مفتاح Gemini API:", type="password")
 
@@ -14,7 +13,6 @@ if not api_key:
 else:
     try:
         genai.configure(api_key=api_key)
-        # اسم الكلاس الصحيح
         model = genai.GenerativeModel('gemini-1.5-flash')
         
         st.success("تم الاتصال بنجاح! جاهز لتوليد الامتحان.")
@@ -33,3 +31,4 @@ else:
                 
     except Exception as e:
         st.error(f"حدث خطأ أثناء الاتصال: {e}")
+ 
