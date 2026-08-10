@@ -5,18 +5,18 @@ st.set_page_config(page_title="صانع الامتحانات التفاعلي", 
 
 st.title("📝 صانع الامتحانات التفاعلي")
 
-st.sidebar.header("الإعدادات")
-api_key = st.sidebar.text_input("أدخلي مفتاح Gemini API:", type="password")
+# قراءة المفتاح المحفوظ سرياً في Streamlit أو من القائمة الجانبية
+api_key = st.secrets.get("GEMINI_API_KEY") if "GEMINI_API_KEY" in st.secrets else st.sidebar.text_input("أدخلي مفتاح Gemini API:", type="password")
 
 if not api_key:
-    st.info("الرجاء إدخال Gemini API Key في القائمة الجانبية للبدء.")
+    st.info("الرجاء إدخال Gemini API Key للبدء.")
 else:
     try:
         genai.configure(api_key=api_key)
-        # إضاقة المسار الكامل للنموذج لتفادي خطأ 404
-        model = genai.GenerativeModel('models/gemini-1.5-flash')
+        # استخدام النسخة الرسمية والمستقرة 
+        model = genai.GenerativeModel('gemini-2.5-flash')
         
-        st.success("تم الاتصال بنجاح! جاهز لتوليد الامتحان.")
+        st.success("التطبيق متصل وجاهز! 🚀")
         
         uploaded_file = st.file_uploader("ارفعي ملف الشيت (PDF أو صورة)", type=["pdf", "png", "jpg", "jpeg"])
         text_input = st.text_area("أو الصقي نص الشيت هنا مباشرة:", height=150)
