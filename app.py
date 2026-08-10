@@ -1,5 +1,6 @@
 import streamlit as st
 import google.generativeai as genai
+from pypdf import PdfReader
 
 st.set_page_config(page_title="صانع الامتحانات التفاعلي", page_icon="📝")
 
@@ -17,18 +18,28 @@ else:
         
         st.success("تم الاتصال بنجاح! جاهز لتوليد الامتحان.")
         
-        text_input = st.text_area("أدخلي نص المادة أو الشيت هنا:", height=200)
+        # خيار رفع ملف PDF أو كتابة نص
+        uploaded_file = st.file_uploader("ارفعي ملف الشيت (PDF)", type=["pdf"])
+        text_input = st.text_area("أو الصقي نص الشيت هنا مباشرة:", height=150)
         
+        extracted_text = ""
+        
+        if uploaded_file is not None:
+            reader = PdfReader(uploaded_file)
+            for page in reader.pages:
+                extracted_text += page.extract_text() or ""
+        elif text_input.strip():
+            extracted_text = text_input.strip()
+            
         if st.button("توليد الامتحان 🚀"):
-            if text_input.strip():
-                with st.spinner("جاري إنشاء الأسئلة..."):
-                    prompt = f"قم بإنشاء امتحان تفاعلي مكون من أسئلة اختيار من متعدد مع الإجابات النموذجية بناءً على النص التالي:\n\n{text_input}"
+            if extracted_text:
+                with st.spinner("جاري قراءة الشيت وإنشاء الأسئلة..."):
+                    prompt = f"قم بإنشاء امتحان تفاعلي مكون من أسئلة اختيار من متعدد مع الإجابات النموذجية بناءً على المحتوى التالي:\n\n{extracted_text}"
                     response = model.generate_content(prompt)
                     st.markdown("### 📋 الامتحان الناتِج:")
                     st.write(response.text)
             else:
-                st.warning("الرجاء كتابة أو لصق نص المادة أولاً.")
+                st.warning("الرجاء رفع ملف PDF أو كتابة نص الشيت أولاً.")
                 
     except Exception as e:
         st.error(f"حدث خطأ أثناء الاتصال: {e}")
- 
